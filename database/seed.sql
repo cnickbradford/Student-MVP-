@@ -1,0 +1,1 @@
+INSERT INTO task (name, priority) VALUES ('Finish coding project', 'URGENT');
