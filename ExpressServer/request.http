@@ -1,2 +1,28 @@
 ### test request for server 
 GET http://localhost:5000/
+
+### request to see all task
+GET http://localhost:3000/api/task
+
+###request to see singular task
+GET http://localhost:3000/api/task/3
+
+
+### posting a new task
+POST http://localhost:3000/api/task
+content-type: application/json
+
+{
+    "name": "trash",
+    "priority": "Low"
+}
+
+### updating a value in a task
+PATCH http://localhost:3000/api/task/3
+content-type: application/json
+
+{
+    "priority": "high"
+}
+### deleting a row from the table
+DELETE http://localhost:3000/api/task/3
