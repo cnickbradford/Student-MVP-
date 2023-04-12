@@ -5,7 +5,7 @@ GET http://localhost:5000/
 GET http://localhost:3000/api/task
 
 ###request to see singular task
-GET http://localhost:3000/api/task/3
+GET http://localhost:3000/api/task/4
 
 
 ### posting a new task
@@ -13,16 +13,16 @@ POST http://localhost:3000/api/task
 content-type: application/json
 
 {
-    "name": "trash",
+    "name": "Take out trash",
     "priority": "Low"
 }
 
 ### updating a value in a task
-PATCH http://localhost:3000/api/task/3
+PATCH http://localhost:3000/api/task/2
 content-type: application/json
 
 {
-    "priority": "high"
+    "completed": "true"
 }
 ### deleting a row from the table
 DELETE http://localhost:3000/api/task/3

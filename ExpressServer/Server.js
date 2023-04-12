@@ -6,7 +6,7 @@ const cors = require('cors');
 dotenv.config();
 app.use(express.json());
 app.use(cors());
-app.use(express.static('../public'));
+// app.use(express.static('./public'));
 const PORT = process.env.PORT || 5000
 
 //---connnecting pool---
@@ -16,13 +16,13 @@ pool.connect();
 
 
 //---routes---
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Hello World')
 });
 
+//---reading all task---
 app.get('/api/task', (req, res) => {
-    pool.query('SELECT * FROM task').then((result) => {
-        console.log(result.rows)
+    pool.query('SELECT * FROM task ORDER BY id').then((result) => {
         res.send(result.rows)
     })
 })
@@ -30,24 +30,27 @@ app.get('/api/task', (req, res) => {
 //---reading a singular task---
 app.get('/api/task/:id', (req, res) => {
     pool.query(`SELECT * FROM task WHERE id=${req.params.id}`).then((result) => {
-        console.log(result.rows)
         res.send(result.rows)
     })
 })
 
 //---creating a new task---
 app.post('/api/task', (req, res) => {
+    console.log('route hitting')
     let taskName = req.body.name
     let taskPriority = req.body.priority
-    pool.query(`INSERT INTO task (name, priority) VALUES ('${taskName}', '${taskPriority}');`).then((result) =>
-        res.send(result.rows))
+    console.log(taskName, taskPriority)
+    pool.query(`INSERT INTO task (name, priority) VALUES ('${taskName}', '${taskPriority}') RETURNING *;`).then((result) =>
+        {res.send(result.rows)})
+        
 })
 
 //---updating a task---
 app.patch('/api/task/:id', (req, res) => {
-    let key = Object.keys(req.body)[0]
-    let value = Object.values(req.body)[0]
-    pool.query(`UPDATE task SET ${key} = $1 WHERE id = $2 RETURNING *`, [value, req.params.id]).then((result) => {
+    let name = req.body.name
+    let priority = req.body.priority
+    let completed = req.body.completed
+    pool.query(`UPDATE task SET name = COALESCE($1, name), priority = COALESCE($2, priority), completed = COALESCE($3, completed) WHERE id = $4 RETURNING *`, [name, priority, completed, req.params.id]).then((result) => {
         if (result.rows.length == 0) {
             res.status(400).send('task id not found')
         } else {
